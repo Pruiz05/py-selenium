@@ -28,3 +28,45 @@ class Booking(webdriver.Chrome):
             f'a[data-modal-header-async-url-param*="selected_currency={currency}"]'
         )
         selected_currency_element.click()
+
+    def select_place_to_go(self, place_to_go):
+        searc_field = self.find_element_by_id('ss')
+        searc_field.clear()
+        searc_field.send_keys(place_to_go)
+
+        fist_result = self.find_element_by_css_selector(
+            'li[data-i="0"]'
+        )
+
+        fist_result.click()
+
+    def select_dates(self, check_in_date, check_out_date):
+        check_in_element = self.find_element_by_css_selector(
+            f'td[data-date="{check_in_date}"]'
+        )
+        check_in_element.click()
+
+        check_out_element = self.find_element_by_css_selector(
+            f'td[data-date="{check_out_date}"]'
+        )
+        check_out_element.click()
+
+    def select_adults(self, count=1):
+        selection_element = self.find_element_by_id('xp__guests__toggle')
+        selection_element.click()
+
+        while True:
+            btn_decrease_adults = self.find_element_by_css_selector(
+                'button[aria-label="Reduce el número de Adultos"]'
+            )
+            btn_decrease_adults.click()
+
+            adults_value_element = self.find_element_by_id('group_adults')
+            adults_value = adults_value_element.get_attribute(
+                'value'
+            ) # should give back adults count
+            if int(adults_value) == 1:
+                break
+
+
+
