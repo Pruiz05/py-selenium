@@ -2,6 +2,8 @@ import booking.constants as const
 import os
 from selenium import webdriver
 
+from booking.booking_filtration import BookingFiltration
+
 class Booking(webdriver.Chrome):
     def __init__(self, driver_path=r"C:/SeleniumDrivers", tearDown=False):
         self.driver_path = driver_path
@@ -28,6 +30,16 @@ class Booking(webdriver.Chrome):
             f'a[data-modal-header-async-url-param*="selected_currency={currency}"]'
         )
         selected_currency_element.click()
+
+    def change_language(self, language=None):
+        language_element = self.find_element_by_css_selector(
+            'button[data-tooltip-text="Elegir el idioma que prefieres"]'
+        )
+        language_element.click()
+        selected_language_element = self.find_element_by_css_selector(
+            f'a[data-lang="{language}"]'
+        )
+        selected_language_element.click()
 
     def select_place_to_go(self, place_to_go):
         searc_field = self.find_element_by_id('ss')
@@ -57,7 +69,7 @@ class Booking(webdriver.Chrome):
 
         while True:
             btn_decrease_adults = self.find_element_by_css_selector(
-                'button[aria-label="Reduce el número de Adultos"]'
+                'button[aria-label="Decrease number of Adults"]'
             )
             btn_decrease_adults.click()
 
@@ -68,5 +80,19 @@ class Booking(webdriver.Chrome):
             if int(adults_value) == 1:
                 break
 
+        increase_btn_element = self.find_element_by_css_selector(
+            'button[aria-label="Increase number of Adults"]'
+        )
 
+        for _ in range(count - 1):
+            increase_btn_element.click()
 
+    def click_search(self):
+        btn_search = self.find_element_by_css_selector(
+            'button[type="submit"]'
+        )
+        btn_search.click()
+
+    def apply_filtration(self):
+        filtration = BookingFiltration(driver=self)
+        filtration.apply_star_rating(5)
