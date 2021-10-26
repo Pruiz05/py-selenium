@@ -9,7 +9,9 @@ class Booking(webdriver.Chrome):
         self.driver_path = driver_path
         self.tearDown = tearDown
         os.environ['PATH'] += self.driver_path
-        super(Booking, self).__init__()
+        options = webdriver.ChromeOptions()
+        options.add_experimental_option('excludeSwitches', ['enable-logging'])
+        super(Booking, self).__init__(options=options)
         # implicitly wait method
         self.implicitly_wait(15)
         self.maximize_window()
@@ -95,4 +97,5 @@ class Booking(webdriver.Chrome):
 
     def apply_filtration(self):
         filtration = BookingFiltration(driver=self)
-        filtration.apply_star_rating(5)
+        filtration.apply_star_rating(3, 4, 5)
+        filtration.sort_price_lowest_first()
